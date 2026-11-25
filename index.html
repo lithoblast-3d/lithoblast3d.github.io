@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LithoBlast3D — Diseño y simulación de voladuras</title>
+<meta name="description" content="Software gratuito para diseñar mallas de perforación y voladura en minería subterránea y tajo abierto: tipos de arranque, curvas de nivel DWG, simulación 3D, fragmentación, costos.">
+<link rel="icon" href="img/favicon.png">
+<style>
+  /* Mismos colores del programa (app/ui/tema.py) */
+  :root{
+    --fondo:#14171b; --panel:#1b1f24; --panel-alto:#242a31; --borde:#2f363e;
+    --texto:#e8ebef; --sec:#8f99a5; --acento:#2ec4b6; --acento-osc:#1a6e67; --azul:#3d8fe0; --aviso:#e6b84a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--fondo);color:var(--texto);font-family:"Segoe UI",Inter,Roboto,system-ui,sans-serif;
+       font-size:16px;line-height:1.55}
+  a{color:var(--acento);text-decoration:none}
+  .cont{max-width:1180px;margin:0 auto;padding:0 22px}
+
+  /* Barra superior = barra de menús del programa */
+  header{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--borde)}
+  .barra{display:flex;align-items:center;gap:18px;height:58px}
+  .marca{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:#fff}
+  .marca img{width:30px;height:30px}
+  nav{display:flex;gap:4px;margin-left:auto}
+  nav a{color:var(--texto);padding:7px 13px;border-radius:7px;font-size:14.5px}
+  nav a:hover{background:var(--panel-alto)}
+  .btn{display:inline-flex;align-items:center;gap:9px;border-radius:9px;padding:11px 22px;font-weight:600;
+       border:1px solid var(--borde);background:var(--panel-alto);color:var(--texto);cursor:pointer;font-size:15px}
+  .btn:hover{border-color:var(--acento)}
+  .btn.prim{background:var(--acento);border-color:var(--acento);color:#0b1514}
+  .btn.prim:hover{background:#3ad6c7}
+  .btn.peq{padding:7px 14px;font-size:14px}
+
+  /* Portada */
+  .portada{padding:64px 0 34px;display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center}
+  .etiqueta{color:var(--acento);font-size:12.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+  h1{font-size:46px;line-height:1.1;margin:10px 0 16px;color:#fff;letter-spacing:-.5px}
+  h1 span{color:var(--acento)}
+  .lead{color:var(--sec);font-size:18px;max-width:560px}
+  .acciones{display:flex;gap:12px;margin:28px 0 12px;flex-wrap:wrap}
+  .nota{color:var(--sec);font-size:13.5px}
+
+  /* Ventana tipo programa */
+  .ventana{background:var(--panel);border:1px solid var(--borde);border-radius:12px;overflow:hidden;
+           box-shadow:0 30px 70px rgba(0,0,0,.45)}
+  .ventana .tit{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#101317;
+                border-bottom:1px solid var(--borde);font-size:12.5px;color:var(--sec)}
+  .ventana .tit i{width:11px;height:11px;border-radius:50%;background:#3a424c;display:inline-block}
+  .menus{display:flex;gap:2px;padding:5px 8px;font-size:12px;color:var(--texto);border-bottom:1px solid var(--borde);
+         white-space:nowrap;overflow:hidden}
+  .menus span{padding:3px 8px;border-radius:5px}
+  .menus span.on{background:var(--acento-osc)}
+  .ventana img{display:block;width:100%}
+
+  /* Indicadores (como las tarjetas KPI del programa) */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 8px}
+  .kpi{background:var(--panel);border:1px solid var(--borde);border-radius:12px;padding:14px 16px}
+  .kpi b{display:block;font-size:26px;color:#fff}
+  .kpi small{color:var(--sec);font-size:13px}
+
+  section{padding:58px 0}
+  h2{font-size:30px;color:#fff;margin:6px 0 10px}
+  .sub{color:var(--sec);max-width:720px;margin-bottom:30px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:12px;padding:20px 20px 18px;
+           transition:border-color .15s, transform .15s}
+  .tarjeta:hover{border-color:var(--acento);transform:translateY(-2px)}
+  .tarjeta .ico{width:38px;height:38px;border-radius:9px;background:var(--acento-osc);display:grid;place-items:center;
+                font-size:19px;margin-bottom:12px}
+  .tarjeta h3{font-size:17px;color:#fff;margin-bottom:6px}
+  .tarjeta p{color:var(--sec);font-size:14.5px}
+  .tarjeta ul{color:var(--sec);font-size:14px;margin:8px 0 0 18px}
+
+  .galeria{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  figure{background:var(--panel);border:1px solid var(--borde);border-radius:12px;overflow:hidden}
+  figure img{width:100%;display:block}
+  figcaption{padding:10px 14px;color:var(--sec);font-size:13.5px;border-top:1px solid var(--borde)}
+
+  .pasos{counter-reset:p;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .paso{background:var(--panel);border:1px solid var(--borde);border-radius:12px;padding:20px;position:relative}
+  .paso::before{counter-increment:p;content:counter(p);position:absolute;top:-14px;left:18px;width:30px;height:30px;
+                border-radius:50%;background:var(--acento);color:#0b1514;font-weight:700;display:grid;place-items:center}
+  .paso h3{font-size:16px;color:#fff;margin:8px 0 6px}
+  .paso p{color:var(--sec);font-size:14px}
+  .aviso{background:#2f2a1c;border:1px solid #5c4d24;color:var(--aviso);border-radius:10px;padding:14px 16px;
+         font-size:14.5px;margin-top:20px}
+  .descarga{background:linear-gradient(135deg,#1b1f24,#16302d);border:1px solid var(--acento-osc);border-radius:16px;
+            padding:38px;display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+  .descarga h2{margin:0}
+  .descarga .der{margin-left:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--panel);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--borde)}
+  th{background:var(--panel-alto);color:var(--sec);font-weight:600}
+  footer{border-top:1px solid var(--borde);background:var(--panel);padding:26px 0;color:var(--sec);font-size:13.5px;margin-top:30px}
+  @media (max-width:900px){
+    .portada{grid-template-columns:1fr;padding-top:36px} h1{font-size:36px}
+    .grid,.galeria{grid-template-columns:1fr}.pasos,.kpis{grid-template-columns:1fr 1fr} nav{display:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="cont barra">
+    <div class="marca"><img src="img/logo.png" alt="">LithoBlast3D</div>
+    <nav>
+      <a href="#funciones">Funciones</a><a href="#capturas">Capturas</a>
+      <a href="#instalar">Instalar</a><a href="#requisitos">Requisitos</a><a href="app/">Celular</a>
+    </nav>
+    <a class="btn prim peq" href="#descargar">Descargar</a>
+  </div>
+</header>
+
+<main class="cont">
+  <div class="portada">
+    <div>
+      <div class="etiqueta">Perforación y voladura · Windows</div>
+      <h1>Diseña tu malla de voladura <span>en minutos</span>, de la sección al 3D.</h1>
+      <p class="lead">LithoBlast3D genera mallas completas para frentes subterráneos y bancos de tajo abierto,
+        las coloca sobre tus curvas de nivel del DWG, simula la perforación y la voladura en 3D y calcula
+        fragmentación, daño, cimbras y costos.</p>
+      <div class="acciones">
+        <a class="btn prim" id="btn-descarga" href="#descargar">⬇ Descargar para Windows</a>
+        <a class="btn" href="app/">📱 Usar en el celular</a>
+      </div>
+      <div class="nota" id="version">Gratis · Windows 10/11 de 64 bits</div>
+    </div>
+    <div class="ventana">
+      <div class="tit"><i></i><i></i><i></i>&nbsp; LithoBlast3D — Malla sobre la topografía</div>
+      <div class="menus"><span>Archivo</span><span>Editar</span><span>Análisis</span><span>Ver</span>
+        <span class="on">Topografía y CAD</span><span>Biblioteca de mallas</span><span>Simulación 3D</span><span>Reportes</span></div>
+      <img src="img/malla_topografia.png" alt="Malla de perforación sobre curvas de nivel">
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><b>7</b><small>tipos de arranque por sección</small></div>
+    <div class="kpi"><b>DWG</b><small>abre curvas de nivel y exporta la malla</small></div>
+    <div class="kpi"><b>10</b><small>etapas de simulación 3D</small></div>
+    <div class="kpi"><b>7</b><small>herramientas de análisis</small></div>
+  </div>
+
+  <section id="funciones">
+    <div class="etiqueta">Funciones</div>
+    <h2>Todo el ciclo en un solo programa</h2>
+    <p class="sub">Es el mismo programa de escritorio, con el mismo menú: Archivo, Editar, Análisis, Ver, Topografía y CAD,
+      Biblioteca de mallas, Visualizador 2D/3D, Simulación 3D y Reportes.</p>
+    <div class="grid">
+      <div class="tarjeta"><div class="ico">⊞</div><h3>Malla automática por tipo de arranque</h3>
+        <p>Ingresas la sección, la roca, los diámetros y la barra; eliges entre varias mallas completas:</p>
+        <ul><li>Arranques del estándar de 6 pies adaptados</li><li>Corte de 4 secciones (Holmberg)</li>
+          <li>4 cuadrantes (Ash) · Quemado · Corte en V</li><li>Cuneta, retardos y kg por taladro</li></ul></div>
+      <div class="tarjeta"><div class="ico">⛰</div><h3>Malla sobre la topografía</h3>
+        <p>Importa el DWG/DXF con curvas de nivel, crea la superficie y diseña el banco: cada collar toma la cota del
+          terreno y cada taladro llega a la cota de piso. Detecta la cara libre y arma la secuencia.</p></div>
+      <div class="tarjeta"><div class="ico">⇪</div><h3>Exporta a AutoCAD</h3>
+        <p>Guarda la malla en DWG o DXF con coordenadas reales y capas separadas: collares, taladros 3D, carga,
+          números, retardos, cotas, área y leyenda.</p></div>
+      <div class="tarjeta"><div class="ico">◈</div><h3>Simulación 3D</h3>
+        <p>Labor, malla, jumbo o perforadora manual, perforación, carguío en corte, secuencia de salida,
+          fragmentación y comparación antes / después.</p></div>
+      <div class="tarjeta"><div class="ico">◔</div><h3>Análisis técnico</h3>
+        <ul><li>Fragmentación Kuz-Ram + Swebrec y ajuste a datos</li><li>Zona de daño (Kirsch)</li>
+          <li>Comparador de burden (7 fórmulas)</li><li>Macizo rocoso: RMR, Q, GSI, Hoek-Brown</li>
+          <li>Cimbra metálica · Respuesta dinámica · Costos</li></ul></div>
+      <div class="tarjeta"><div class="ico">▤</div><h3>Biblioteca, reportes y vibraciones</h3>
+        <p>Biblioteca de mallas del estándar con planos, mapa de vibración (Holmberg–Persson), reportes HTML,
+          importación y exportación CSV, deshacer en todo.</p></div>
+    </div>
+  </section>
+
+  <section id="capturas">
+    <div class="etiqueta">Capturas</div>
+    <h2>Resultados del programa</h2>
+    <p class="sub">Gráficos generados por LithoBlast3D con su tema oscuro.</p>
+    <div class="galeria">
+      <figure><img src="img/zona_danio.png" alt=""><figcaption>Zona de daño sobre una malla de frente (Kirsch)</figcaption></figure>
+      <figure><img src="img/fragmentacion.png" alt=""><figcaption>Curva granulométrica Kuz-Ram / Swebrec</figcaption></figure>
+      <figure><img src="img/cimbra.png" alt=""><figcaption>Cimbra metálica: fuerza axial y momento</figcaption></figure>
+      <figure><img src="img/malla_topografia.png" alt=""><figcaption>Malla de banco sobre curvas de nivel con retardos</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="celular">
+    <div class="descarga" style="background:linear-gradient(135deg,#1b1f24,#1a2433)">
+      <div>
+        <div class="etiqueta">Android y iPhone</div>
+        <h2>LithoBlast3D en el celular</h2>
+        <p class="nota" style="max-width:560px">Malla automática por tipo de arranque, malla de banco sobre un DXF con curvas
+          de nivel, vista 3D, exportación DXF y las herramientas de análisis. Usa el mismo motor de cálculo, corre en el
+          teléfono y funciona sin internet después de abrirla una vez. Ábrela y elige «Instalar app».</p>
+      </div>
+      <div class="der"><a class="btn prim" href="app/">📱 Abrir la versión móvil</a></div>
+    </div>
+  </section>
+
+  <section id="descargar">
+    <div class="descarga">
+      <div>
+        <div class="etiqueta">Descarga</div>
+        <h2>LithoBlast3D para Windows</h2>
+        <p class="nota" id="detalle">Instalador para Windows 10/11 de 64 bits. No necesitas instalar Python.</p>
+      </div>
+      <div class="der">
+        <a class="btn prim" id="btn-descarga2" href="#">⬇ Descargar instalador</a>
+        <a class="nota" id="otros" href="#">Otras versiones y notas de cambios</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar">
+    <div class="etiqueta">Instalación</div>
+    <h2>Cuatro pasos</h2>
+    <p class="sub">&nbsp;</p>
+    <div class="pasos">
+      <div class="paso"><h3>Descarga</h3><p>Baja el instalador <b>LithoBlast3D-…-instalador.exe</b>.</p></div>
+      <div class="paso"><h3>Ejecuta</h3><p>Si Windows muestra «Windows protegió su PC», pulsa <b>Más información → Ejecutar de todas formas</b>
+        (el programa no tiene firma comercial).</p></div>
+      <div class="paso"><h3>Instala</h3><p>Sigue el asistente en español. No pide permisos de administrador.</p></div>
+      <div class="paso"><h3>Para DWG</h3><p>Instala también <a href="https://www.opendesign.com/guestfiles/oda_file_converter" target="_blank" rel="noopener">ODA File Converter</a>
+        (gratis). Sin él puedes usar DXF.</p></div>
+    </div>
+    <div class="aviso">⚠ Los diseños y cálculos de LithoBlast3D son de referencia. Verifícalos y ajústalos con pruebas de campo
+      y con las normas de tu operación antes de usarlos. El programa se entrega sin garantía.</div>
+  </section>
+
+  <section id="requisitos">
+    <div class="etiqueta">Requisitos</div>
+    <h2>Requisitos del equipo</h2>
+    <p class="sub">&nbsp;</p>
+    <table>
+      <tr><th>Sistema</th><td>Windows 10 u 11 de 64 bits</td></tr>
+      <tr><th>Memoria</th><td>8 GB de RAM recomendado (4 GB mínimo)</td></tr>
+      <tr><th>Gráficos</th><td>Tarjeta con OpenGL 3.2 o superior (la integrada de Intel/AMD sirve)</td></tr>
+      <tr><th>Espacio</th><td>Alrededor de 1 GB</td></tr>
+      <tr><th>DWG</th><td>ODA File Converter (opcional, gratuito)</td></tr>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <div class="cont" style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+    <div class="marca" style="font-size:15px"><img src="img/logo.png" alt="" style="width:22px;height:22px">LithoBlast3D</div>
+    <div>Software personal de diseño de voladuras.</div>
+    <div style="margin-left:auto"><a id="repo" href="#">Proyecto en GitHub</a></div>
+  </div>
+</footer>
+
+<script>
+  // ▼▼ CAMBIA ESTO por tu usuario y repositorio de GitHub ▼▼
+  const REPO_FIJO = "TU-USUARIO/barreno3d";   // solo se usa si la página no está en usuario.github.io/repositorio
+  // En GitHub Pages el usuario y el repositorio salen de la dirección: no hay que editar nada.
+  const REPO = location.hostname.endsWith(".github.io") && location.pathname.split("/")[1]
+    ? `${location.hostname.split(".")[0]}/${location.pathname.split("/")[1]}` : REPO_FIJO;
+  // ▲▲
+
+  const pagina = `https://github.com/${REPO}/releases/latest`;
+  for (const id of ["btn-descarga2", "otros"]) document.getElementById(id).href = pagina;
+  document.getElementById("repo").href = `https://github.com/${REPO}`;
+  document.getElementById("btn-descarga").href = "#descargar";
+
+  // Lee la última versión publicada y enlaza el instalador directamente
+  fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(rel => {
+      const archivos = rel.assets || [];
+      const inst = archivos.find(a => /instalador\.exe$/i.test(a.name)) ||
+                   archivos.find(a => /\.exe$/i.test(a.name)) || archivos.find(a => /\.zip$/i.test(a.name));
+      const ver = (rel.tag_name || "").replace(/^v/i, "");
+      if (inst) {
+        const mb = (inst.size / 1048576).toFixed(0);
+        for (const id of ["btn-descarga", "btn-descarga2"]) {
+          const b = document.getElementById(id);
+          b.href = inst.browser_download_url;
+          b.textContent = `⬇ Descargar v${ver} (${mb} MB)`;
+        }
+        document.getElementById("detalle").textContent =
+          `Versión ${ver} · ${new Date(rel.published_at).toLocaleDateString("es-PE")} · ${inst.name}`;
+      }
+      document.getElementById("version").textContent = `Versión ${ver} · Gratis · Windows 10/11 de 64 bits`;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>

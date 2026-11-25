@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1f24">
+<title>LithoBlast3D móvil</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icono-192.png">
+<link rel="apple-touch-icon" href="img/icono-192.png">
+<link rel="stylesheet" href="app.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<header class="top"><img src="img/icono-192.png" alt=""><h1>LithoBlast3D</h1><span class="ver" id="ver">móvil</span></header>
+
+<main>
+  <!-- ============================ MALLA DEL FRENTE -->
+  <!-- ============================ INICIO -->
+  <section class="vista on" id="v-inicio">
+    <div class="hero">
+      <div class="hero-txt">
+        <span class="hero-tag">Perforación y voladura subterránea y a tajo abierto</span>
+        <h2>Diseña, carga y simula tu voladura</h2>
+        <p>Mallas por tipo de roca, equipos reales, productos de ficha técnica y el ciclo completo en 3D: perforación, carguío, amarre, voladura y limpieza.</p>
+        <div class="hero-btn"><button class="btn prim" data-ir="frente">Empezar un diseño</button><button class="btn" data-ir="ciclo">Ver el ciclo</button></div>
+      </div>
+      <svg class="hero-svg" viewBox="0 0 200 170" aria-hidden="true">
+        <defs><radialGradient id="hg" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#3a4450"/><stop offset="1" stop-color="#1b2027"/></radialGradient></defs>
+        <path d="M20 165V75a80 72 0 0 1 160 0v90z" fill="url(#hg)" stroke="#2ec4b6" stroke-width="2"/>
+        <g fill="none" stroke-width="2.4">
+          <circle cx="100" cy="105" r="6" stroke="#fff"/><circle cx="88" cy="105" r="3.5" stroke="#d9433a"/><circle cx="112" cy="105" r="3.5" stroke="#d9433a"/><circle cx="100" cy="93" r="3.5" stroke="#d9433a"/><circle cx="100" cy="117" r="3.5" stroke="#d9433a"/>
+          <g stroke="#e6b84a"><circle cx="72" cy="88" r="3.5"/><circle cx="128" cy="88" r="3.5"/><circle cx="72" cy="124" r="3.5"/><circle cx="128" cy="124" r="3.5"/></g>
+          <g stroke="#3fae4a"><circle cx="45" cy="80" r="3.5"/><circle cx="62" cy="52" r="3.5"/><circle cx="100" cy="38" r="3.5"/><circle cx="138" cy="52" r="3.5"/><circle cx="155" cy="80" r="3.5"/><circle cx="40" cy="120" r="3.5"/><circle cx="160" cy="120" r="3.5"/></g>
+          <g stroke="#3d8fe0"><circle cx="45" cy="155" r="3.5"/><circle cx="80" cy="155" r="3.5"/><circle cx="120" cy="155" r="3.5"/><circle cx="155" cy="155" r="3.5"/></g>
+        </g>
+        <path d="M88 105L100 93 112 105 100 117z M72 88 128 88 128 124 72 124z" fill="none" stroke="#2f9e44" stroke-width="1" stroke-dasharray="3 2" opacity=".7"/>
+      </svg>
+    </div>
+
+    <h3 class="sec-tit">¿Qué vas a trabajar?</h3>
+    <div class="accesos">
+      <button data-ir="frente"><b>⛰</b><span>Frente de avance</span><small>Galería, crucero, rampa</small></button>
+      <button data-ir="chimenea"><b>⬆</b><span>Chimenea</span><small>Taladros hacia arriba · stoper</small></button>
+      <button data-ir="tajeo"><b>▤</b><span>Tajeo</span><small>Corte y relleno · breasting</small></button>
+      <button data-ir="banco"><b>◭</b><span>Tajo abierto</span><small>Malla sobre curvas de nivel</small></button>
+      <button data-ir="simular"><b>▶</b><span>Simular ciclo</span><small>Mecanizado o convencional</small></button>
+      <button data-ir="productos"><b>🧨</b><span>Emulnor</span><small>500 · 1000 · 3000 · 5000</small></button>
+      <button data-ir="referencias"><b>📚</b><span>Referencias de minas</span><small>Volcan · Retamas</small></button>
+      <button data-ir="analisis"><b>📐</b><span>Cálculos</span><small>Burden, carga, vibración…</small></button>
+    </div>
+
+    <h3 class="sec-tit" id="ciclo">El ciclo de minado</h3>
+    <ol class="ciclo">
+      <li><b>Perforación</b><span>Jumbo en secciones grandes; jackleg en secciones pequeñas o estrechas; stoper en chimeneas. El arranque abre la cara libre con taladros de alivio vacíos.</span></li>
+      <li><b>Carguío</b><span>Cebo al fondo, cartuchos con atacador de madera y taco al collar. Más energía en el arranque, menos en el contorno.</span></li>
+      <li><b>Amarre</b><span>Carmex + conectores + mecha rápida en el orden de salida, o Fanel + cordón detonante (el número del Fanel da el retardo).</span></li>
+      <li><b>Voladura</b><span>Salen primero el arranque, luego ayudas, cuadradores, corona y al final los arrastres.</span></li>
+      <li><b>Ventilación</b><span>Se ingresa solo cuando los gases bajan a niveles seguros.</span></li>
+      <li><b>Limpieza</b><span>Scoop (LHD) en labores donde entra; en secciones pequeñas, pala neumática con carros o winche.</span></li>
+    </ol>
+    <p class="ayuda" style="margin:0 4px 18px">Los diseños de una mina concreta (Volcan, Retamas) se muestran como ejemplos, no como reglas generales.</p>
+  </section>
+
+  <section class="vista" id="v-malla">
+    <h2>Malla automática</h2>
+    <p class="sub">Escribe la sección, la roca y los taladros: el programa arma varias mallas completas, cada una con su tipo de arranque.</p>
+    <form id="f-malla" autocomplete="off">
+      <details class="grupo" open><summary>Labor y equipo</summary><div class="campos">
+        <label class="c ancho">Labor<select name="labor" data-lista="labores"></select></label>
+        <label class="c ancho">Equipo de perforación<select name="equipo" data-lista="equipos" data-vacio="Automático (según la sección)"></select></label>
+        <label class="c ancho">Iniciación<select name="sistema" data-lista="sistemas"></select></label>
+        <label class="c solo-tajeo">Burden en tajeo (m)<input name="burden_tajeo" type="number" step="0.05" value="0.40" inputmode="decimal"></label>
+        <label class="c solo-tajeo">Espaciamiento (m)<input name="espaciamiento_tajeo" type="number" step="0.05" value="0.30" inputmode="decimal"></label>
+      </div><p class="ayuda" id="ayuda-labor">El equipo se elige por las medidas de la sección y las del catálogo (editable en «Más»). Una sección pequeña se perfora con jackleg; la chimenea con stoper.</p></details>
+      <details class="grupo" open><summary>Sección</summary><div class="campos">
+        <label class="c">Ancho (m)<input name="ancho" type="number" step="0.05" value="3.5" inputmode="decimal"></label>
+        <label class="c">Alto (m)<input name="alto" type="number" step="0.05" value="3.5" inputmode="decimal"></label>
+        <label class="c">Forma<select name="forma" data-lista="formas"></select></label>
+        <label class="c">Flecha / radio (m)<input name="flecha" type="number" step="0.05" value="1.15" inputmode="decimal"></label>
+      </div></details>
+      <details class="grupo" open><summary>Roca</summary><div class="campos">
+        <label class="c ancho">Calidad<select name="roca" data-lista="rocas"></select></label>
+        <label class="chk ancho"><input type="checkbox" name="usar_rmr"> Usar mis datos (RMR y RQD)</label>
+        <label class="c">RMR<input name="rmr" type="number" step="1" value="50" inputmode="decimal"></label>
+        <label class="c">RQD (%)<input name="rqd" type="number" step="1" value="60" inputmode="decimal"></label>
+        <label class="c">Densidad (t/m³)<input name="densidad_roca" type="number" step="0.05" value="2.7" inputmode="decimal"></label>
+      </div></details>
+      <details class="grupo" open><summary>Taladros</summary><div class="campos">
+        <label class="c">Ø perforación (mm)<input name="diametro" type="number" step="1" value="38" inputmode="decimal"></label>
+        <label class="c">Ø alivio (mm)<input name="diametro_alivio" type="number" step="1" value="64" inputmode="decimal"></label>
+        <label class="c">N.º de alivios<input name="n_alivios" type="number" step="1" value="1" min="1" max="8" inputmode="numeric"></label>
+        <label class="c">Barra (pies)<input name="pies" type="number" step="1" value="6" inputmode="decimal"></label>
+      </div></details>
+      <details class="grupo"><summary>Explosivo</summary><div class="campos">
+        <label class="c ancho">Principal<select name="explosivo" data-lista="explosivos"></select></label>
+        <label class="c ancho">Contorno<select name="explosivo_contorno" data-lista="explosivos" data-vacio="El mismo"></select></label>
+        <label class="c">Largo cartucho (pulg)<input name="largo_cartucho_pulg" type="number" step="1" value="8" inputmode="decimal"></label>
+      </div><p class="ayuda">Los explosivos se editan en la pestaña «Más».</p></details>
+      <details class="grupo"><summary>Corte en V y cuneta</summary><div class="campos">
+        <label class="c ancho">Ángulo del corte en V (°)<input name="angulo_v" type="number" step="1" value="65" inputmode="decimal"></label>
+        <label class="chk ancho"><input type="checkbox" name="cuneta" checked> Poner cuneta</label>
+        <label class="c">Lado<select name="cuneta_lado"><option>izquierda</option><option>derecha</option></select></label>
+        <label class="c">Ancho (m)<input name="cuneta_ancho" type="number" step="0.05" value="0.35" inputmode="decimal"></label>
+        <label class="c">Profundidad (m)<input name="cuneta_prof" type="number" step="0.05" value="0.30" inputmode="decimal"></label>
+      </div></details>
+      <div class="pegado"><button class="btn prim ancho" type="submit">⚙ Generar mallas</button></div>
+    </form>
+    <div id="malla-msg"></div>
+    <div id="opciones"></div>
+  </section>
+
+  <!-- ============================ SIMULAR LA LABOR -->
+  <section class="vista" id="v-sim">
+    <h2>Simular la labor</h2>
+    <p class="sub">Usa la malla que elegiste en «Frente»: el equipo que corresponde, la perforación de cada taladro dentro de la roca, el carguío, la voladura por retardos, los humos y el material desplazado.</p>
+    <div id="sim-cab"></div>
+    <div id="sim-caja"></div>
+    <div id="sim-pie"></div>
+  </section>
+
+  <!-- ============================ BANCO SOBRE TOPOGRAFÍA -->
+  <section class="vista" id="v-banco">
+    <h2>Malla sobre la topografía</h2>
+    <p class="sub">Abre un DXF con curvas de nivel (desde AutoCAD: Guardar como → DXF). Cada collar toma la cota del terreno.</p>
+    <div class="tarjeta" style="padding:14px">
+      <label class="btn ancho prim" for="archivo-dxf">📂 Abrir archivo DXF</label>
+      <input id="archivo-dxf" type="file" accept=".dxf,.DXF" hidden>
+      <div id="dxf-info" class="sub" style="margin:10px 0 0"></div>
+      <div id="dxf-capas" class="capas"></div>
+      <button class="btn ancho" id="b-tin" style="display:none;margin-top:10px">Crear superficie con las capas marcadas</button>
+    </div>
+    <form id="f-banco" autocomplete="off" style="display:none">
+      <details class="grupo" open><summary>Área de voladura</summary><div class="campos">
+        <label class="c ancho">Área<select name="area" id="sel-area"><option value="rect">Rectángulo</option></select></label>
+        <label class="c">Centro Este X<input name="cx" type="number" step="0.5" inputmode="decimal"></label>
+        <label class="c">Centro Norte Y<input name="cy" type="number" step="0.5" inputmode="decimal"></label>
+        <label class="c">Largo (m)<input name="largo" type="number" step="1" value="40" inputmode="decimal"></label>
+        <label class="c">Ancho (m)<input name="ancho" type="number" step="1" value="20" inputmode="decimal"></label>
+        <label class="c ancho">Azimut del largo (°)<input name="az_largo" type="number" step="5" value="90" inputmode="decimal"></label>
+      </div></details>
+      <details class="grupo" open><summary>Malla</summary><div class="campos">
+        <label class="c">Burden (m)<input name="burden" type="number" step="0.1" value="4" inputmode="decimal"></label>
+        <label class="c">Espaciamiento (m)<input name="espaciamiento" type="number" step="0.1" value="4.5" inputmode="decimal"></label>
+        <label class="c">Patrón<select name="patron" data-lista="patrones"></select></label>
+        <label class="c">Margen al borde (m)<input name="margen" type="number" step="0.1" value="1" inputmode="decimal"></label>
+        <label class="c">Azimut de salida (°)<input name="azimut" type="number" step="5" value="0" inputmode="decimal"></label>
+        <button class="btn" type="button" id="b-detectar" style="align-self:end">Detectar</button>
+      </div></details>
+      <details class="grupo"><summary>Banco y carga</summary><div class="campos">
+        <label class="c ancho">Fondo<select name="modo_piso" data-lista="pisos"></select></label>
+        <label class="c">Cota de piso (m)<input name="cota_piso" type="number" step="0.5" inputmode="decimal"></label>
+        <label class="c">Altura de banco (m)<input name="altura" type="number" step="0.5" value="10" inputmode="decimal"></label>
+        <label class="c">Sobreperforación (m)<input name="sobreperforacion" type="number" step="0.1" value="1.2" inputmode="decimal"></label>
+        <label class="c">Inclinación (°)<input name="inclinacion" type="number" step="1" value="90" inputmode="decimal"></label>
+        <label class="c">Ø (mm)<input name="diametro" type="number" step="1" value="165" inputmode="decimal"></label>
+        <label class="c">Taco (m)<input name="taco" type="number" step="0.1" value="3" inputmode="decimal"></label>
+        <label class="c ancho">Explosivo<select name="explosivo" data-lista="explosivos"></select></label>
+      </div></details>
+      <details class="grupo"><summary>Secuencia</summary><div class="campos">
+        <label class="c ancho">Tipo<select name="secuencia" data-lista="secuencias"></select></label>
+        <label class="c">Entre taladros (ms)<input name="ms_taladros" type="number" step="1" value="25" inputmode="decimal"></label>
+        <label class="c">Entre filas (ms)<input name="ms_filas" type="number" step="1" value="67" inputmode="decimal"></label>
+      </div></details>
+      <div class="pegado"><button class="btn prim ancho" type="submit">⚙ Calcular malla</button></div>
+    </form>
+    <div id="banco-msg"></div>
+    <div id="banco-res"></div>
+  </section>
+
+  <!-- ============================ ANÁLISIS -->
+  <section class="vista" id="v-analisis">
+    <h2>Análisis</h2>
+    <p class="sub">El mismo motor de cálculo del programa de escritorio.</p>
+    <div class="herr" id="herramientas"></div>
+  </section>
+
+  <!-- ============================ MÁS -->
+  <section class="vista" id="v-mas">
+    <h2>Más</h2>
+    <div class="tarjeta" style="padding:14px" id="instalar-caja">
+      <h3 style="margin-bottom:6px">Instalar en el teléfono</h3>
+      <p class="sub" style="margin:0 0 10px">Queda con su ícono y funciona sin internet después de abrirla una vez.</p>
+      <button class="btn prim ancho" id="b-instalar">📲 Instalar app</button>
+      <p class="sub" id="instalar-ayuda" style="margin:10px 0 0"></p>
+    </div>
+    <details class="grupo"><summary>Explosivos</summary>
+      <div id="lista-exp" style="padding:0 14px"></div>
+      <div class="campos" id="f-exp">
+        <label class="c ancho">Nombre<input name="nombre" placeholder="p. ej. Emulnor 3000 1¼&quot;x8&quot;"></label>
+        <label class="c">Tipo<select name="tipo"><option value="encartuchado">Encartuchado</option><option value="granel">Granel</option></select></label>
+        <label class="c">Densidad (g/cm³)<input name="densidad" type="number" step="0.01" value="1.14" inputmode="decimal"></label>
+        <label class="c">Ø cartucho (mm)<input name="diametro_cartucho" type="number" step="0.1" value="32" inputmode="decimal"></label>
+        <label class="c">VOD (m/s)<input name="vod" type="number" step="50" value="5000" inputmode="decimal"></label>
+        <label class="c">RWS (ANFO = 1)<input name="prp" type="number" step="0.01" value="1.0" inputmode="decimal"></label>
+        <button class="btn prim" type="button" id="b-add-exp" style="align-self:end">+ Agregar</button>
+      </div>
+      <p class="ayuda">Usa los datos de la ficha técnica del fabricante. Los genéricos son de referencia.</p>
+    </details>
+    <details class="grupo"><summary>Equipos de perforación</summary>
+      <div style="padding:0 14px 12px">
+        <p class="ayuda" style="margin:0 0 8px">Medidas de catálogo de los fabricantes. La sección mínima se usa para decidir si el jumbo entra; cámbiala según tu equipo.</p>
+        <div id="lista-equipos"></div>
+        <div class="fila-btn"><button class="btn prim" type="button" id="b-eq-guardar">Guardar cambios</button><button class="btn" type="button" id="b-eq-restaurar">Restaurar catálogo</button></div>
+        <div class="campos" id="f-eq-probar" style="padding:8px 0 0">
+          <label class="c">Ancho (m)<input name="ancho" type="number" step="0.1" value="1.5" inputmode="decimal"></label>
+          <label class="c">Alto (m)<input name="alto" type="number" step="0.1" value="1.5" inputmode="decimal"></label>
+          <label class="c">Labor<select name="labor" data-lista="labores"></select></label>
+          <button class="btn" type="button" id="b-eq-probar" style="align-self:end">Probar</button>
+        </div>
+        <div id="eq-probar-res" class="sub"></div>
+      </div>
+    </details>
+    <div class="tarjeta" style="padding:14px">
+      <h3 style="margin-bottom:6px">Referencias de minas</h3>
+      <p class="sub" style="margin:0 0 10px">Mallas de Volcan SC-CR (13 diseños por RMR), chimeneas y tajeos de Retamas. Son ejemplos de minas concretas, no reglas generales.</p>
+      <button class="btn ancho" id="b-referencias">📚 Ver referencias</button>
+    </div>
+    <div class="tarjeta" style="padding:14px">
+      <h3>Acerca de</h3>
+      <p class="sub" style="margin:6px 0">LithoBlast3D móvil usa el mismo motor de cálculo que el programa de Windows
+        (Python ejecutándose en tu teléfono). La lectura de DWG y el editor completo están en la versión de Windows.</p>
+      <a class="btn ancho" href="../">⬇ Versión para Windows</a>
+      <div class="aviso">⚠ Los diseños y cálculos son de referencia: verifícalos y ajústalos con pruebas de campo.</div>
+    </div>
+  </section>
+</main>
+
+<nav class="abajo">
+  <button class="on" data-v="v-inicio"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
+  <button data-v="v-malla"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="16" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="2.2"/></svg>Frente</button>
+  <button data-v="v-sim"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20V9a9 9 0 0 1 18 0v11z"/><path d="M9 20v-5h6v5"/><path d="M12 4v3"/></svg>Simular</button>
+  <button data-v="v-banco"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20l6-9 4 5 3-4 7 8z"/><path d="M4 7c3-2 6 2 9 0s5-2 7 0"/></svg>Banco</button>
+  <button data-v="v-analisis"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Análisis</button>
+  <button data-v="v-mas"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>Más</button>
+</nav>
+
+<div class="hoja" id="hoja"><header><h3 id="hoja-tit"></h3><button class="x" id="hoja-x">✕</button></header>
+  <div class="cuerpo" id="hoja-cuerpo"></div></div>
+<div id="carga"><div class="rueda"></div><div id="carga-txt">Cargando…</div>
+  <small>La primera vez descarga el motor de cálculo (unos 15 MB). Después funciona sin internet.</small></div>
+<div id="tostada"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
