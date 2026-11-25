@@ -1,0 +1,57 @@
+# Crea el instalador de LithoBlast3D EN GITHUB (no hay que instalar nada en tu PC) y lo publica en Releases.
+# Uso: sube el zip del programa (p. ej. LithoBlast3D_v3.7.0.zip) a la carpeta «programa/» del repositorio.
+#      También se puede lanzar a mano: pestaña Actions → «Crear instalador» → Run workflow.
+name: Crear instalador
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "programa/**.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  instalador:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Descomprimir el programa
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem programa\*.zip | Sort-Object Name | Select-Object -Last 1
+          if (-not $zip) { throw "No hay ningún .zip en la carpeta programa/" }
+          Write-Host "Usando $($zip.Name)"
+          Expand-Archive $zip.FullName -DestinationPath fuente -Force
+          $raiz = (Get-ChildItem fuente -Recurse -Filter ejecutar.py | Select-Object -First 1).Directory.FullName
+          "RAIZ=$($raiz -replace '\\','/')" >> $env:GITHUB_ENV
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Crear el instalador
+        shell: pwsh
+        working-directory: ${{ env.RAIZ }}
+        run: |
+          .\empaquetar\crear_ejecutable.ps1 -Instalador -SinPruebas
+          $v = (python -c "import app; print(app.VERSION)").Trim()
+          "VERSION=$v" >> $env:GITHUB_ENV
+          Get-ChildItem empaquetar\salida
+
+      - name: Publicar en Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: LithoBlast3D ${{ env.VERSION }}
+          body: |
+            Instalador para Windows 10/11 (64 bits). Descarga el archivo «…-instalador.exe» y ábrelo.
+            Si aparece «Windows protegió su PC»: Más información → Ejecutar de todas formas.
+          files: ${{ env.RAIZ }}/empaquetar/salida/*-instalador.exe
+          make_latest: true
